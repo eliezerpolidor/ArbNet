@@ -1,6 +1,6 @@
 # Protección Derechos Autor
 
----
+
 © 2026 Eliezer Polidor.  
 - Todos los derechos reservados.  
 

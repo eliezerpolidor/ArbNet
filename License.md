@@ -1,11 +1,12 @@
 # Protección Derechos Autor
 
 © 2026 Eliezer Polidor.  
-Todos los derechos reservados.  
+- Todos los derechos reservados.  
 
-Este repositorio contiene una **versión parcial y demostrativa** del proyecto ArbNet, creada exclusivamente para participar en el GitHub Finish-Up-A-Thon Challenge.  
+- Este repositorio contiene una **versión parcial y demostrativa** del proyecto ArbNet, creada exclusivamente para participar en el GitHub Finish-Up-A-Thon Challenge.  
 
 La **versión completa y mejorada** será comercializada y distribuida bajo condiciones privadas.  
+
 ---
 ### Condiciones de uso
 - Se permite visualizar y clonar este repositorio únicamente con fines de evaluación y aprendizaje.  

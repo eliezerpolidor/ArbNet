@@ -1,4 +1,4 @@
-#  Protección Derechos Autor
+# Protección Derechos Autor
 ---
 © 2026 Eliezer Polidor.  
 Todos los derechos reservados.  
@@ -13,7 +13,7 @@ La **versión completa y mejorada** será comercializada y distribuida bajo cond
   - Uso comercial del código o contenido aquí publicado.  
   - Modificación, redistribución o creación de obras derivadas sin autorización expresa del autor.  
 - El autor se reserva todos los derechos sobre la versión completa y futura del proyecto 
---
+---
 ### Contacto
 Para licencias comerciales o colaboraciones, contactar directamente a:  
 **Eliezer Polidor** – [LinkedIn](https://www.linkedin.com/in/eliezer-polidor) o correo electrónico personal eliezerpolidor@gmail.com

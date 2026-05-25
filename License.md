@@ -5,8 +5,7 @@
 - Todos los derechos reservados.  
 
 - Este repositorio contiene una **versión parcial y demostrativa** del proyecto ArbNet, creada exclusivamente para participar en el GitHub Finish-Up-A-Thon Challenge.  
-
-La **versión completa y mejorada** será comercializada y distribuida bajo condiciones privadas.  
+- La **versión completa y mejorada** será comercializada y distribuida bajo condiciones privadas.  
 
 ---
 ### Condiciones de uso

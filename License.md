@@ -17,5 +17,5 @@
 ---
 ### Contacto
 Para licencias comerciales o colaboraciones, contactar directamente a:  
-**Eliezer Polidor** – [LinkedIn](https://www.linkedin.com/in/eliezer-polidor) o correo electrónico personal eliezerpolidor@gmail.com
+**Eliezer Polidor** – <a href="https://www.linkedin.com/in/eliezer-polidor" target="_blank">LinkedIn</a> o correo electrónico personal <a href="mailto:eliezerpolidor@gmail.com">eliezerpolidor@gmail.com</a>
 

@@ -66,9 +66,10 @@ El MVP de la App ArbNet incluye las siguientes pantallas y funcionalidades bási
   <li><strong>Dashboard principal</strong>
     <ul>
       <li>Capital total activo</li>
-      <li>Ganancias día/mes</li>
-      <li>Estado del mercado P2P</li>
-      <li>Ranking de monedas</li>
+      <li>Ganancias Netas(Mes)</li>
+      <li>Rendimiento(ROI)</li>
+      <li>Gráfica de Rendimiento Semanal</li>
+      <li>Métricas de transacciones Recientes</li>
     </ul>
   </li>
 </ul>
@@ -76,7 +77,7 @@ El MVP de la App ArbNet incluye las siguientes pantallas y funcionalidades bási
 ---
 <h2 id="C2">📌 Arquitectura Asincrónica y Multihilo</h2>
 ## 📌 Visión General
-ArbNet implementa un modelo asincrónico para garantizar que el sistema no se bloquee durante la comunicación con la **API de Binance**.  
+ArbNet implementa un modelo asincrónico para garantizar que el sistema no se bloque durante la comunicación con la **API de Binance**.  
 El objetivo es mantener el **Frontend** activo y receptivo mientras el **Backend** procesa tareas en paralelo.
 
 ## 🔄 Flujo del sistema
@@ -102,23 +103,12 @@ El objetivo es mantener el **Frontend** activo y receptivo mientras el **Backend
 ---
 <h2 id="C3">📌 Pantallas principales de ArbNet.</h2>
 
-ArbNet es responsivo y pensado para distintos dispositivos, y aqui se muestran las dos pantallas una para pc de escritorio y otra para móvil
+ArbNet es responsivo y pensado para distintos dispositivos, y aqui se muestran la pantalla principal al iniciar la App
 ## Dashboard (Escritorio)
 
-Vista principal del sistema ArbNet en versión escritorio.
-Muestra información de quienes somos, como contactarnos, para los que ya estan registrado 
-inicio de sesión, para registrarse, en el centro del Dashboard una presentación de las 
-funcionalidades de ArbNet. y abajo el pie de amigo donde sale nuestro copy right.
-![Dashboard (Escritorio)](assets/images/pantala-principal-escritorio.png)
+## Dashboard (Escritorio)
 
-## Dashboard (Móvil)
-
-Versión adaptada para dispositivos móviles.
-muestra el logo con un menu de barras para activar las demas opciones, principalmente salen 
-Iniciar sesión y registrarse y en el centro una breve presentación de las 
-funcionalidades de ArbNet.
-![Dashboard (Móvil)](assets/images/pantalla-principal-movil.png)
-
+<img src="assets/images/pantalla-principal-escritorio.png" alt="Dashboard Escritorio" width="800" />
 ---
 <h2 id="C4">📌 Tecnologías</h2>
 
@@ -126,28 +116,26 @@ ArbNet se construye con un stack moderno que asegura rendimiento, escalabilidad 
 
 ## 🖥️ Frontend
 - Framework: React.js  
-- Librerías: React Router, Axios  
-- Estilos: CSS/Bootstrap para diseño responsivo  
+- Librerías: React Router, Fetch  
+- Estilos: CSS3
+- react-icons  
 
 ## ⚙️ Backend
 - Framework: ASP.NET Core  
 - Lenguaje: C#  
 - API REST para comunicación con el frontend  
 - Integración con Binance API  
+- Api Swagger
+- Swashbuckle Documentación
 
 ## 🗄️ Base de datos
 - SQL Server para datos estructurados (usuarios, transacciones)  
-- MongoDB opcional para almacenamiento flexible de logs  
+- Entity Framework Core
+- BCrypt.Net-Next  
 
 ## 🧩 Control de versiones
 - GitHub para repositorio público  
-- Ramas principales: `main` y `dev`  
-- Issues y Projects para gestión de tareas  
-
-## 🚀 Despliegue
-- Frontend: Vercel / Netlify  
-- Backend: Render / Railway  
-- CI/CD para integración continua  
+- Ramas principales: `main`  
 
 ---
 <h2 id="C5">📌 Impacto</h2>
@@ -172,4 +160,138 @@ ArbNet busca transformar el arbitraje P2P eliminando errores manuales y optimiza
 
 ---
 <h2 id="C6">📌 Instrucciones de despliegue de ArbNet</h2>
-<h2 id="C7">📌 Demo</h2>
+
+## 📂 Estructura del proyecto
+
+ArbNet/
+├── frontend/                    # Aplicación React
+│   ├── public/
+│   │   ├── images/
+│   │   │   ├── logoArbNet.png
+│   │   │   └── fondoBitcoin.png
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Modal.jsx
+│   │   │   └── Footer.jsx
+│   │   ├── pages/
+│   │   │   ├── auth/
+│   │   │   │   ├── Welcome.jsx      # Pantalla principal
+│   │   │   │   ├── Dashboard.jsx    # Panel de control
+│   │   │   │   ├── Dashboard.css
+│   │   │   │   └── Welcome.css
+│   │   │   └── ...
+│   │   ├── App.jsx
+│   │   ├── index.jsx
+│   │   └── index.css
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/                    # API .NET
+│   ├── ArbNet/
+│   │   ├── Controllers/
+│   │   │   ├── UsersController.cs   # Registro/Login
+│   │   │   └── BinanceP2PController.cs
+│   │   ├── Models/
+│   │   │   ├── User.cs
+│   │   │   ├── BinanceP2POrder.cs
+│   │   │   └── DTOs/
+│   │   │       ├── UserDto.cs
+│   │   │       ├── RegisterDto.cs
+│   │   │       └── LoginDto.cs
+│   │   ├── Services/
+│   │   │   └── BinanceP2PService.cs
+│   │   ├── ArbNetDbContext.cs
+│   │   ├── Program.cs
+│   │   └── appsettings.json
+│   ├── ArbNet.sln
+│   └── ArbNet.csproj
+│
+├── Database/
+│   └── arbnet_setup.sql         # Script de base de datos
+│
+├── Documentation/
+│   └── API_Documentation.md
+│
+├── License
+└── README.md
+
+---
+Instrucciones de Despliegue
+## 🚀 Instrucciones de Despliegue
+
+Sigue estos pasos para clonar, configurar y ejecutar **ArbNet** en tu entorno local.
+
+### 📋 Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado el siguiente software en tu equipo:
+
+| Software | Versión Mínima |
+| :--- | :--- |
+| **Node.js** | 18.x o superior |
+| **.NET SDK** | 8.0 o superior |
+| **SQL Server** | 2019 o superior (SSMS recomendado) |
+| **Git** | 2.x o superior |
+
+---
+
+### ⚡ Pasos de Instalación y Configuración
+
+#### 1. Clonar el Repositorio
+Abre tu terminal y ejecuta los siguientes comandos para clonar el proyecto y acceder a la carpeta raíz:
+```bash
+git clone [https://github.com/eliezerpolidor/ArbNet.git](https://github.com/eliezerpolidor/ArbNet.git)
+cd ArbNet
+
+2. Configurar la Base de Datos
+Abre SQL Server Management Studio (SSMS) y conéctate a tu instancia local.
+
+Crea una base de datos vacía llamada arbnetDB:
+CREATE DATABASE arbnetDB;
+GO
+
+Abre y ejecuta el script de inicialización ubicado en la ruta del proyecto:
+
+backend/DataBase/arbnet_setup.sql
+
+(Este script creará automáticamente las tablas OrdersP2P, Subscriptions, Transactions, Users, Wallets e insertará los datos iniciales).
+
+3. Configurar y Levantar el Backend (.NET)
+Navega a la carpeta del servidor, restaura los paquetes necesarios e inicia la API:
+cd backend/ArbNet
+
+# Restaurar paquetes NuGet
+dotnet restore
+
+# Ejecutar el servidor backend
+dotnet run
+
+Nota: Asegúrate de revisar el archivo appsettings.json para verificar que la cadena de conexión coincida con tus credenciales locales de SQL Server (ver sección de Variables de Entorno).
+
+4. Configurar y Levantar el Frontend (React)
+Abre una nueva terminal en la raíz del proyecto, navega a la carpeta de la interfaz e inicia el entorno de desarrollo:
+cd frontend
+
+# Instalar dependencias de Node
+npm install
+
+# Iniciar la aplicación React con Vite
+npm run dev
+
+🔑 Variables de Entorno y Configuración
+Backend (appsettings.json)
+Modifica el archivo ubicado en backend/ArbNet/appsettings.json con tu cadena de conexión local y tus llaves de prueba de Binance si es necesario:
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=arbnetDB;Trusted_Connection=True;TrustServerCertificate=True;"
+  },
+  "BinanceConfig": {
+    "UseTestnet": true,
+    "ApiKey": "TU_API_KEY_AQUI",
+    "SecretKey": "TU_SECRET_KEY_AQUI"
+  }
+}
+
+🏃 Ejecución de la AplicaciónUna vez configurado todo, el sistema se distribuye en los siguientes puertos locales:ComponenteComando de InicioURL / Puerto LocalBackend (API)dotnet runhttps://localhost:7039 o http://localhost:5115Frontend (App)npm run devhttp://localhost:5173Resumen rápido para iniciar el proyecto en el día a día:Asegúrate de que el servicio de SQL Server esté corriendo.Terminal 1 (Backend): cd backend/ArbNet && dotnet runTerminal 2 (Frontend): cd frontend && npm run devAbre tu navegador web e ingresa a: http://localhost:5173
+---

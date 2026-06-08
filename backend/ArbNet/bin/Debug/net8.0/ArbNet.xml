@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ArbNet</name>
+    </assembly>
+    <members>
+        <member name="M:ArbNet.Controllers.BinanceP2PController.GetCompletedP2pOrders(System.String,System.String)">
+            <summary>
+            Obtiene el historial de órdenes P2P para el panel de arbitraje.
+            </summary>
+        </member>
+        <member name="M:ArbNet.Controllers.BinanceTestController.TestPing">
+            <summary>
+            Realiza un test de conectividad (Ping) con los servidores de Binance.
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.OrderNumber">
+            <summary>
+            Número único de la orden
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.AdvNo">
+            <summary>
+            Número del anunciante
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.TradeType">
+            <summary>
+            Tipo de operación: BUY (compra) o SELL (venta)
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.Asset">
+            <summary>
+            Criptomoneda (USDT, BTC, ETH)
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.Fiat">
+            <summary>
+            Moneda Fiat (VES, COP, USD)
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.FiatSymbol">
+            <summary>
+            Símbolo de la moneda local (Bs., $)
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.Amount">
+            <summary>
+            Cantidad de criptomoneda
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.UnitPrice">
+            <summary>
+            Precio por unidad
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.TotalPrice">
+            <summary>
+            Precio total
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.Commission">
+            <summary>
+            Comisión de Binance
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.Status">
+            <summary>
+            Estado de la orden (COMPLETED, CANCELLED)
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.CreateTime">
+            <summary>
+            Timestamp de creación
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.PaymentMethod">
+            <summary>
+            Método de pago utilizado (Ej: Pago Móvil, Banesco, Zinli)
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.NetProfit">
+            <summary>
+            Ganancia neta calculada del arbitraje
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.FormattedCreateTime">
+            <summary>
+            Propiedad calculada: Fecha y hora legible a partir del Timestamp
+            </summary>
+        </member>
+        <member name="P:ArbNet.Models.BinanceP2POrder.NetAmount">
+            <summary>
+            Propiedad calculada: El dinero real neto (descontando o sumando la comisión según la operación)
+            </summary>
+        </member>
+        <member name="M:ArbNet.Services.BinanceP2PService.ProcesarFinanzasArbNetAsync">
+            <summary>
+            Método principal que expone tu Backend (vía Swagger o Controlador)
+            Procesa los datos simulados de Binance, calcula la matemática y persiste en SQL Server.
+            </summary>
+        </member>
+        <member name="M:ArbNet.Services.BinanceP2PService.GetOrderHistoryAsync(System.Boolean)">
+            <summary>
+            Obtiene el historial de órdenes P2P desde la base de datos o datos simulados DINÁMICOS
+            </summary>
+        </member>
+        <member name="M:ArbNet.Services.BinanceP2PService.GetSimulatedOrdersAsync">
+            <summary>
+            Genera una lista de datos simulados dinámicos que cambian en cada llamado (datos Aleatorios)
+            </summary>
+        </member>
+        <member name="M:ArbNet.Services.BinanceP2PService.GetArbitrageCalculationsAsync(System.Boolean)">
+            <summary>
+            Calcula el resumen de arbitraje - usa las mismas órdenes guardadas en caché
+            </summary>
+        </member>
+    </members>
+</doc>

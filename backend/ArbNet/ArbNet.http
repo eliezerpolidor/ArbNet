@@ -1,0 +1,6 @@
+@ArbNet_HostAddress = http://localhost:5115
+
+GET {{ArbNet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

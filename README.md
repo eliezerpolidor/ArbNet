@@ -106,8 +106,6 @@ El objetivo es mantener el **Frontend** activo y receptivo mientras el **Backend
 ArbNet es responsivo y pensado para distintos dispositivos, y aqui se muestran la pantalla principal al iniciar la App
 ## Dashboard (Escritorio)
 
-## Dashboard (Escritorio)
-
 <img src="assets/images/pantalla-principal-escritorio.png" alt="Dashboard Escritorio" width="800" />
 ---
 <h2 id="C4">📌 Tecnologías</h2>
@@ -161,62 +159,41 @@ ArbNet busca transformar el arbitraje P2P eliminando errores manuales y optimiza
 ---
 <h2 id="C6">📌 Instrucciones de despliegue de ArbNet</h2>
 
-## 📂 Estructura del proyecto
+## 📁 Estructura del Proyecto
 
+```text
 ArbNet/
-├── frontend/                    # Aplicación React
+├── frontend/                     # Aplicación Frontend en React
 │   ├── public/
-│   │   ├── images/
-│   │   │   ├── logoArbNet.png
-│   │   │   └── fondoBitcoin.png
-│   │   └── index.html
+│   │   └── images/               # Recursos gráficos estáticos
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Modal.jsx
-│   │   │   └── Footer.jsx
+│   │   ├── components/           # Componentes reutilizables (Navbar, Modal, Footer)
 │   │   ├── pages/
-│   │   │   ├── auth/
-│   │   │   │   ├── Welcome.jsx      # Pantalla principal
-│   │   │   │   ├── Dashboard.jsx    # Panel de control
-│   │   │   │   ├── Dashboard.css
-│   │   │   │   └── Welcome.css
-│   │   │   └── ...
-│   │   ├── App.jsx
-│   │   ├── index.jsx
-│   │   └── index.css
+│   │   │   ├── auth/             # Vistas de autenticación (Welcome, Register)
+│   │   │   └── Dashboard.jsx     # Panel de control principal
+│   │   ├── App.jsx               # Enrutador y componente raíz
+│   │   ├── index.jsx             # Punto de entrada de React
+│   │   └── index.css             # Estilos globales
 │   ├── package.json
-│   └── vite.config.js
+│   └── vite.config.js            # Configuración del empaquetador Vite
 │
-├── backend/                    # API .NET
+├── backend/                      # API Backend en .NET 8
 │   ├── ArbNet/
-│   │   ├── Controllers/
-│   │   │   ├── UsersController.cs   # Registro/Login
-│   │   │   └── BinanceP2PController.cs
-│   │   ├── Models/
-│   │   │   ├── User.cs
-│   │   │   ├── BinanceP2POrder.cs
-│   │   │   └── DTOs/
-│   │   │       ├── UserDto.cs
-│   │   │       ├── RegisterDto.cs
-│   │   │       └── LoginDto.cs
-│   │   ├── Services/
-│   │   │   └── BinanceP2PService.cs
-│   │   ├── ArbNetDbContext.cs
-│   │   ├── Program.cs
-│   │   └── appsettings.json
-│   ├── ArbNet.sln
-│   └── ArbNet.csproj
-│
-├── Database/
-│   └── arbnet_setup.sql         # Script de base de datos
+│   │   ├── Controllers/          # Endpoints de la API (Users, BinanceP2P)
+│   │   ├── Models/               # Entidades de base de datos y DTOs
+│   │   ├── Services/             # Lógica de negocio e integración con Binance
+│   │   ├── DataContext/          # Conexión a datos (ArbNetDbContext.cs)
+│   │   ├── appsettings.json      # Configuración local y credenciales
+│   │   ├── Program.cs            # Inicialización de la API .NET
+│   │   └── ArbNet.csproj
+│   │
+│   └── DataBase/
+│       └── arbnet_setup.sql      # Script de inicialización de la Base de Datos
 │
 ├── Documentation/
-│   └── API_Documentation.md
-│
-├── License
-└── README.md
-
+│   └── API_Documentation.md      # Manual de endpoints y contratos
+├── License                       # Licencia del proyecto
+└── README.md                     # Documentación principal de presentación
 ---
 Instrucciones de Despliegue
 ## 🚀 Instrucciones de Despliegue

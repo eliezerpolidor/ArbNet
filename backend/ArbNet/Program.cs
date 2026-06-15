@@ -40,6 +40,12 @@ namespace ArbNet
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ArbNetDbContext>();
+                dbContext.Database.Migrate(); // Esto crea las tablas automáticamente en SQL Server
+            }
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

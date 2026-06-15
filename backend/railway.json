@@ -5,6 +5,6 @@
     "rootDirectory": "backend/ArbNet"
   },
   "deploy": {
-    "startCommand": "dotnet ArbNet.dll"
+    "startCommand": "find . -name 'ArbNet.dll'"
   }
 }

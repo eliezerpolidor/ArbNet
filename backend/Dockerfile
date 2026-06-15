@@ -1,14 +1,14 @@
-# Usamos una imagen oficial de .NET SDK para compilar
+# 1. Fase de construcción
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Copiamos todo el proyecto
+# Copiamos todos los archivos del repositorio
 COPY . .
 
-# Publicamos el proyecto específico
-RUN dotnet publish backend/ArbNet/ArbNet.csproj -c Release -o out
+# Compilamos el proyecto específico (ajustado a la ruta que me mostraste)
+RUN dotnet publish "ArbNet/ArbNet.csproj" -c Release -o out
 
-# Usamos una imagen más ligera para ejecutar
+# 2. Fase de ejecución (imagen más pequeña)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .

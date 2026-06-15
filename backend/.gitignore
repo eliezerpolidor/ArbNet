@@ -1,0 +1,11 @@
+# Carpetas de compilación y temporales
+bin/
+obj/
+.vs/
+.vscode/
+
+# Archivos de usuario específicos
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

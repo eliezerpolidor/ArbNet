@@ -31,13 +31,15 @@ const Dashboard = () => {
     // Cargar datos de Binance al montar el componente
     const fetchData = async () => {
       try {
-        const response = await fetch('https://localhost:7039/api/BinanceP2P/historial-p2p');
+        // const response = await fetch('https://localhost:7039/api/BinanceP2P/historial-p2p');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/BinanceP2P/historial-p2p`); //add Produccion
         const data = await response.json();
         console.log('Orders recibidos:', data);  // Agregar esto
         setOrders(data);
         
         // También calcular el summary
-        const summaryResponse = await fetch('https://localhost:7039/api/BinanceP2P/summary');
+        //const summaryResponse = await fetch('https://localhost:7039/api/BinanceP2P/summary');
+        const summaryResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/BinanceP2P/summary`); //add Produccion
         const summaryData = await summaryResponse.json();
         setSummary(summaryData);
       } catch (error) {

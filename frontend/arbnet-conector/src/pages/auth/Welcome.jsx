@@ -298,7 +298,7 @@ const handleLogin = async (e) => {
         </div>
       )}
 
-      /*----------Modal Login-----------*/
+      {/*----------Modal Login-----------*/}
       {/* Modal Login */}
       {showLoginModal && (
         <div className="modal-overlay" onClick={closeLoginModal}>
@@ -397,7 +397,7 @@ const handleLogin = async (e) => {
         </div>
       )}
 
-      /*-----------Modal Registro -------------*/
+      {/*-----------Modal Registro -------------*/}
       {/* Modal Registro */}
       {showRegisterModal && (
         <div className="modal-overlay" onClick={() => setShowRegisterModal(false)}>

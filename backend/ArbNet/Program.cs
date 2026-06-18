@@ -44,7 +44,7 @@ namespace ArbNet
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ArbNetDbContext>(); // <-- Aquí cambiamos DataContext por ArbNetDbContext
-                context.Database.EnsureCreated(); // <-- Esto creará tus tablas reales automáticamente basándose en tus modelos
+               // context.Database.EnsureCreated(); // <-- Esto creará tus tablas reales automáticamente basándose en tus modelos
             }
 
             if (app.Environment.IsDevelopment())

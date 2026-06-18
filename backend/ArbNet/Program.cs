@@ -47,11 +47,21 @@ namespace ArbNet
                // context.Database.EnsureCreated(); // <-- Esto creará tus tablas reales automáticamente basándose en tus modelos
             }
 
-            if (app.Environment.IsDevelopment())
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
+            // Permitir Swagger tanto en desarrollo local como en producción de Railway
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ArbNet API v1");
+                // Esto hace que Swagger cargue directamente en la raíz si lo deseas,
+                // o puedes dejarlo por defecto si prefieres usar /swagger/index.html
+            });
+
+
 
             // 2. REQUERIDO: Habilitar el Middleware de CORS antes de la autorización
             app.UseCors("PermitirReact");

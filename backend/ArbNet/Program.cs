@@ -47,7 +47,10 @@ namespace ArbNet
             {
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    // Intenta leer la variable directa de Railway; si no, busca en appsettings.json
+                    var postgresConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection")
+                                                   ?? builder.Configuration.GetConnectionString("PostgresConnection");
+
                     options.UseNpgsql(postgresConnectionString);
                 }
                 else if (dbProvider?.Equals("LocalSqlServer", StringComparison.OrdinalIgnoreCase) == true)

@@ -10,18 +10,12 @@ namespace ArbNet
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1. DEFINIR LA POLÍTICA DE CORS (Agrégalo aquí)
+            // 1. DEFINIR LA POLÍTICA DE CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("PermitirReact", policy =>
                 {
-                    //policy.WithOrigins(
-                    //    "http://localhost:3000",
-                    //    "http://localhost:5173",
-                    //    "http://localhost:5115",
-                    //    "https://empowering-gentleness-production.up.railway.app"
-                    //)
-                    policy.AllowAnyOrigin() // <-- Permite que cualquier frontend se conecte a tus endpoints
+                    policy.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
@@ -40,36 +34,52 @@ namespace ArbNet
 
             builder.Services.AddBinance();
 
-            // Reemplaza "TuCadenaDeConexionAqui" por tu Server, Database, etc., de SQL Server
+            // ===================================================================
+            // CONFIGURACIÓN DINÁMICA DE LA BASE DE DATOS (Manejador de 3 Vías)
+            // ===================================================================
+            var dbProvider = builder.Configuration["DatabaseSettings:UseProvider"];
+
             builder.Services.AddDbContext<ArbNetDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            {
+                if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    options.UseNpgsql(postgresConnectionString);
+                }
+                else if (dbProvider?.Equals("LocalSqlServer", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var localConnectionString = builder.Configuration.GetConnectionString("LocalSqlServerConnection");
+                    options.UseSqlServer(localConnectionString);
+                }
+                else if (dbProvider?.Equals("AzureSqlServer", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var azureConnectionString = builder.Configuration.GetConnectionString("AzureSqlServerConnection");
+                    options.UseSqlServer(azureConnectionString);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"El proveedor de base de datos configurado '{dbProvider}' no es válido.");
+                }
+            });
+            // ===================================================================
 
             var app = builder.Build();
 
-            //
+            // Bloque de inicialización del Contexto
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<ArbNetDbContext>(); // <-- Aquí cambiamos DataContext por ArbNetDbContext
-               // context.Database.EnsureCreated(); // <-- Esto creará tus tablas reales automáticamente basándose en tus modelos
+                var context = scope.ServiceProvider.GetRequiredService<ArbNetDbContext>();
+                // context.Database.EnsureCreated(); // Mantener comentado para no chocar con las tablas creadas manualmente
             }
 
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
             // Permitir Swagger tanto en desarrollo local como en producción de Railway
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ArbNet API v1");
-                // Esto hace que Swagger cargue directamente en la raíz si lo deseas,
-                // o puedes dejarlo por defecto si prefieres usar /swagger/index.html
             });
 
-
-
-            // 2. REQUERIDO: Habilitar el Middleware de CORS antes de la autorización
+            // 2. Middleware de CORS antes de la autorización
             app.UseCors("PermitirReact");
 
             app.UseHttpsRedirection();

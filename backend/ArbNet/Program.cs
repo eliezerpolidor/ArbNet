@@ -15,7 +15,11 @@ namespace ArbNet
             {
                 options.AddPolicy("PermitirReact", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins(
+                        "https://empowering-gentleness-production-33bc.up.railway.app", // Tu frontend en Railway
+                        "http://localhost:5173",                                        // Tu local con Vite / React
+                        "http://localhost:3000"                                         // Por si usas Create-React-App local
+                     )
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });

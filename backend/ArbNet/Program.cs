@@ -15,9 +15,14 @@ namespace ArbNet
             {
                 options.AddPolicy("PermitirReact", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:5115") // Puertos comunes de React/Vite
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
+                    policy.WithOrigins(
+                        "http://localhost:3000",
+                        "http://localhost:5173",
+                        "http://localhost:5115",
+                        "https://empowering-gentleness-production.up.railway.app"
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
                 });
             });
 

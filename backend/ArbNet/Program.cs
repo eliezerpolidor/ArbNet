@@ -47,12 +47,36 @@ namespace ArbNet
             {
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    // .NET automáticamente convierte "ConnectionStrings__PostgresConnection" de Railway
-                    // en una clave accesible mediante GetConnectionString("PostgresConnection")
-                    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    string postgresConnectionString;
+
+                    // 1. En Railway, las variables nativas de Postgres siempre están disponibles directamente
+                    var pgHost = Environment.GetEnvironmentVariable("PGHOST");
+
+                    if (!string.IsNullOrEmpty(pgHost))
+                    {
+                        var pgPort = Environment.GetEnvironmentVariable("PGPORT");
+                        var pgDatabase = Environment.GetEnvironmentVariable("PGDATABASE");
+                        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
+                        var pgPassword = Environment.GetEnvironmentVariable("PGPASSWORD");
+
+                        postgresConnectionString = $"Host={pgHost};Port={pgPort};Database={pgDatabase};Username={pgUser};Password={pgPassword};";
+                    }
+                    else
+                    {
+                        // 2. Si no está en Railway (entorno local), usa el appsettings.json estándar
+                        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    }
 
                     options.UseNpgsql(postgresConnectionString);
                 }
+                //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
+                //{
+                //    // .NET automáticamente convierte "ConnectionStrings__PostgresConnection" de Railway
+                //    // en una clave accesible mediante GetConnectionString("PostgresConnection")
+                //    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+
+                //    options.UseNpgsql(postgresConnectionString);
+                //}
                 //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 //{
                 //    // 1. Intenta leer directamente la variable tal como está escrita en Railway

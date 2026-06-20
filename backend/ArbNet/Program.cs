@@ -65,11 +65,28 @@ namespace ArbNet
             var app = builder.Build();
 
             // Bloque de inicialización del Contexto
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<ArbNetDbContext>();
+            //    // context.Database.EnsureCreated(); // Mantener comentado para no chocar con las tablas creadas manualmente
+            //}
+            // Asegúrate de que este bloque exista antes de 'app.Run();'
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<ArbNetDbContext>();
-                // context.Database.EnsureCreated(); // Mantener comentado para no chocar con las tablas creadas manualmente
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<ArbNetDbContext>();
+                    // Esta línea mágica revisa si las tablas existen; si no, las crea al instante
+                    context.Database.EnsureCreated();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Un error ocurrió al crear la base de datos.");
+                }
             }
+
 
             // Permitir Swagger tanto en desarrollo local como en producción de Railway
             app.UseSwagger();

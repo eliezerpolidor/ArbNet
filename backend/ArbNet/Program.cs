@@ -47,18 +47,35 @@ namespace ArbNet
             {
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    // 1. Intentamos leer la variable de Railway
                     var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 
-                    // 2. Si por algún motivo Railway no la inyecta bien y llega vacía o sin el "Host",
-                    // le forzamos la cadena de texto real fija de producción directamente en el código.
-                    if (string.IsNullOrEmpty(postgresConnectionString) || !postgresConnectionString.Contains("Host="))
+                    // Si la cadena viene de Railway como una URL (empieza con postgresql:// o postgres://)
+                    if (!string.IsNullOrEmpty(postgresConnectionString) &&
+                        (postgresConnectionString.StartsWith("postgres://") || postgresConnectionString.StartsWith("postgresql://")))
                     {
-                        postgresConnectionString = "Host=thomas.proxy.rlwy.net;Port=22337;Database=railway;Username=postgres;Password=gowaAFKYwsprvoeskPzqdHfPtSHfkjDY;";
+                        // Parseamos la URL para convertirla al formato "Host=...;Port=..." que entiende EF Core
+                        var databaseUri = new Uri(postgresConnectionString);
+                        var userInfo = databaseUri.UserInfo.Split(':');
+
+                        postgresConnectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true;";
                     }
 
                     options.UseNpgsql(postgresConnectionString);
                 }
+                //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
+                //{
+                //    // 1. Intentamos leer la variable de Railway
+                //    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+
+                //    // 2. Si por algún motivo Railway no la inyecta bien y llega vacía o sin el "Host",
+                //    // le forzamos la cadena de texto real fija de producción directamente en el código.
+                //    if (string.IsNullOrEmpty(postgresConnectionString) || !postgresConnectionString.Contains("Host="))
+                //    {
+                //        postgresConnectionString = "Host=thomas.proxy.rlwy.net;Port=22337;Database=railway;Username=postgres;Password=gowaAFKYwsprvoeskPzqdHfPtSHfkjDY;";
+                //    }
+
+                //    options.UseNpgsql(postgresConnectionString);
+                //}
                 //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 //{
                 //    string postgresConnectionString;

@@ -45,27 +45,19 @@ namespace ArbNet
 
             builder.Services.AddDbContext<ArbNetDbContext>(options =>
             {
+
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    // Intenta leer la variable directa de Railway; si no, busca en appsettings.json
-                    var postgresConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection")
-                                                   ?? builder.Configuration.GetConnectionString("PostgresConnection");
+                    // 1. Intenta leer directamente la variable tal como está escrita en Railway
+                    var postgresConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection");
+
+                    // 2. Si no la encuentra (porque estás en local), usa la configuración tradicional
+                    if (string.IsNullOrEmpty(postgresConnectionString))
+                    {
+                        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    }
 
                     options.UseNpgsql(postgresConnectionString);
-                }
-                else if (dbProvider?.Equals("LocalSqlServer", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    var localConnectionString = builder.Configuration.GetConnectionString("LocalSqlServerConnection");
-                    options.UseSqlServer(localConnectionString);
-                }
-                else if (dbProvider?.Equals("AzureSqlServer", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    var azureConnectionString = builder.Configuration.GetConnectionString("AzureSqlServerConnection");
-                    options.UseSqlServer(azureConnectionString);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"El proveedor de base de datos configurado '{dbProvider}' no es válido.");
                 }
             });
             // ===================================================================

@@ -47,21 +47,54 @@ namespace ArbNet
             {
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    string postgresConnectionString;
 
-                    // Si la cadena viene de Railway como una URL (empieza con postgresql:// o postgres://)
-                    if (!string.IsNullOrEmpty(postgresConnectionString) &&
-                        (postgresConnectionString.StartsWith("postgres://") || postgresConnectionString.StartsWith("postgresql://")))
+                    // Si la aplicación está corriendo localmente en tu computadora
+                    if (builder.Environment.IsDevelopment())
                     {
-                        // Parseamos la URL para convertirla al formato "Host=...;Port=..." que entiende EF Core
-                        var databaseUri = new Uri(postgresConnectionString);
-                        var userInfo = databaseUri.UserInfo.Split(':');
+                        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                    }
+                    // Si la aplicación está corriendo en producción dentro de Railway
+                    else
+                    {
+                        // Railway inyecta de forma obligatoria y directa la variable "DATABASE_URL"
+                        // que contiene el Host, Usuario, Puerto y Contraseña interna actualizados al segundo.
+                        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-                        postgresConnectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true;";
+                        if (string.IsNullOrEmpty(databaseUrl))
+                        {
+                            // Respaldo por si acaso
+                            postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                        }
+                        else
+                        {
+                            // Convertimos el formato postgresql://usuario:clave@host:puerto/db al formato que entiende EF Core
+                            var databaseUri = new Uri(databaseUrl);
+                            var userInfo = databaseUri.UserInfo.Split(':');
+
+                            postgresConnectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Include Error Detail=true;";
+                        }
                     }
 
                     options.UseNpgsql(postgresConnectionString);
                 }
+                //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
+                //{
+                //    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+
+                //    // Si la cadena viene de Railway como una URL (empieza con postgresql:// o postgres://)
+                //    if (!string.IsNullOrEmpty(postgresConnectionString) &&
+                //        (postgresConnectionString.StartsWith("postgres://") || postgresConnectionString.StartsWith("postgresql://")))
+                //    {
+                //        // Parseamos la URL para convertirla al formato "Host=...;Port=..." que entiende EF Core
+                //        var databaseUri = new Uri(postgresConnectionString);
+                //        var userInfo = databaseUri.UserInfo.Split(':');
+
+                //        postgresConnectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true;";
+                //    }
+
+                //    options.UseNpgsql(postgresConnectionString);
+                //}
                 //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 //{
                 //    // 1. Intentamos leer la variable de Railway

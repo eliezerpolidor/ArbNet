@@ -45,20 +45,27 @@ namespace ArbNet
 
             builder.Services.AddDbContext<ArbNetDbContext>(options =>
             {
-
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    // 1. Intenta leer directamente la variable tal como está escrita en Railway
-                    var postgresConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection");
-
-                    // 2. Si no la encuentra (porque estás en local), usa la configuración tradicional
-                    if (string.IsNullOrEmpty(postgresConnectionString))
-                    {
-                        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
-                    }
+                    // .NET automáticamente convierte "ConnectionStrings__PostgresConnection" de Railway
+                    // en una clave accesible mediante GetConnectionString("PostgresConnection")
+                    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 
                     options.UseNpgsql(postgresConnectionString);
                 }
+                //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
+                //{
+                //    // 1. Intenta leer directamente la variable tal como está escrita en Railway
+                //    var postgresConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection");
+
+                //    // 2. Si no la encuentra (porque estás en local), usa la configuración tradicional
+                //    if (string.IsNullOrEmpty(postgresConnectionString))
+                //    {
+                //        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                //    }
+
+                //    options.UseNpgsql(postgresConnectionString);
+                //}
             });
             // ===================================================================
 

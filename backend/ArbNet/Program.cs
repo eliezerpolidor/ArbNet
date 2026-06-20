@@ -47,28 +47,42 @@ namespace ArbNet
             {
                 if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    string postgresConnectionString;
+                    // 1. Intentamos leer la variable de Railway
+                    var postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 
-                    // 1. En Railway, las variables nativas de Postgres siempre están disponibles directamente
-                    var pgHost = Environment.GetEnvironmentVariable("PGHOST");
-
-                    if (!string.IsNullOrEmpty(pgHost))
+                    // 2. Si por algún motivo Railway no la inyecta bien y llega vacía o sin el "Host",
+                    // le forzamos la cadena de texto real fija de producción directamente en el código.
+                    if (string.IsNullOrEmpty(postgresConnectionString) || !postgresConnectionString.Contains("Host="))
                     {
-                        var pgPort = Environment.GetEnvironmentVariable("PGPORT");
-                        var pgDatabase = Environment.GetEnvironmentVariable("PGDATABASE");
-                        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
-                        var pgPassword = Environment.GetEnvironmentVariable("PGPASSWORD");
-
-                        postgresConnectionString = $"Host={pgHost};Port={pgPort};Database={pgDatabase};Username={pgUser};Password={pgPassword};";
-                    }
-                    else
-                    {
-                        // 2. Si no está en Railway (entorno local), usa el appsettings.json estándar
-                        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                        postgresConnectionString = "Host=thomas.proxy.rlwy.net;Port=22337;Database=railway;Username=postgres;Password=gowaAFKYwsprvoeskPzqdHfPtSHfkjDY;";
                     }
 
                     options.UseNpgsql(postgresConnectionString);
                 }
+                //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
+                //{
+                //    string postgresConnectionString;
+
+                //    // 1. En Railway, las variables nativas de Postgres siempre están disponibles directamente
+                //    var pgHost = Environment.GetEnvironmentVariable("PGHOST");
+
+                //    if (!string.IsNullOrEmpty(pgHost))
+                //    {
+                //        var pgPort = Environment.GetEnvironmentVariable("PGPORT");
+                //        var pgDatabase = Environment.GetEnvironmentVariable("PGDATABASE");
+                //        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
+                //        var pgPassword = Environment.GetEnvironmentVariable("PGPASSWORD");
+
+                //        postgresConnectionString = $"Host={pgHost};Port={pgPort};Database={pgDatabase};Username={pgUser};Password={pgPassword};";
+                //    }
+                //    else
+                //    {
+                //        // 2. Si no está en Railway (entorno local), usa el appsettings.json estándar
+                //        postgresConnectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+                //    }
+
+                //    options.UseNpgsql(postgresConnectionString);
+                //}
                 //if (dbProvider?.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase) == true)
                 //{
                 //    // .NET automáticamente convierte "ConnectionStrings__PostgresConnection" de Railway

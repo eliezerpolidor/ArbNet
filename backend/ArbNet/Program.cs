@@ -10,6 +10,9 @@ namespace ArbNet
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Integración con Sentry (Toma Dsn, TracesSampleRate y demas opciones desde appsettings.json)
+            builder.WebHost.UseSentry();
+
             // 1. DEFINIR LA POLÍTICA DE CORS
             builder.Services.AddCors(options =>
             {

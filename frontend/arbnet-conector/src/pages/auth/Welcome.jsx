@@ -1,35 +1,35 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import * as Sentry from '@sentry/react'; // 1. Importación de Sentry
 import './Welcome.css';
-
 
 const Welcome = () => {
   // States de los modales
-const [showModal, setShowModal] = useState(false);
-const [showContactModal, setShowContactModal] = useState(false);
-const [showLoginModal, setShowLoginModal] = useState(false);
-const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-// States del formulario
-const [nombre, setNombre] = useState('');
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-const [confirmPassword, setConfirmPassword] = useState('');
-const [errors, setErrors] = useState({});
-const [showPassword, setShowPassword] = useState(false);
-const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-const [username, setUsername] = useState('');
-const [rememberMe, setRememberMe] = useState(false);
-const [country, setCountry] = useState('Venezuela');
-const [subscriptionType, setSubscriptionType] = useState('Free');
+  // States del formulario
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [country, setCountry] = useState('Venezuela');
+  const [subscriptionType, setSubscriptionType] = useState('Free');
 
-// Estado de usuarios registrados
-const [registeredEmails, setRegisteredEmails] = useState([]);
+  // Estado de usuarios registrados
+  const [registeredEmails, setRegisteredEmails] = useState([]);
 
-// Referencia
-const emailInputRef = useRef(null);
+  // Referencia
+  const emailInputRef = useRef(null);
 
- // === FUNCIONES ===
+  // === FUNCIONES ===
   
   // Función para limpiar el formulario
   const cleanForm = () => {
@@ -55,82 +55,81 @@ const emailInputRef = useRef(null);
     cleanForm();
   };
 
-// Función para abrir registro limpio
-const openRegisterModal = () => {
-  cleanForm();
-  setShowRegisterModal(true);
-};
+  // Función para abrir registro limpio
+  const openRegisterModal = () => {
+    cleanForm();
+    setShowRegisterModal(true);
+  };
 
-// Función para abrir login limpio
-const openLoginModal = () => {
-  cleanForm();
-  setShowLoginModal(true);
-};
+  // Función para abrir login limpio
+  const openLoginModal = () => {
+    cleanForm();
+    setShowLoginModal(true);
+  };
 
-const validateForm = () => {
-  const newErrors = {};
-  
-  // 1. Nombre vacío
-  if (!nombre.trim()) {
-    newErrors.nombre = 'El nombre es requerido';
-  }
-  
-  // 2. Correo vacío
-  if (!email) {
-    newErrors.email = 'El correo es requerido';
-  }
-  
-  // 3. Contraseña vacía
-  if (!password) {
-    newErrors.password = 'La contraseña es requerida';
-  }
-  
-  // 4. Contraseña mínima 6 caracteres
-  if (password && password.length < 6) {
-    newErrors.password = 'Mínimo 6 caracteres';
-  }
-  
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!nombre.trim()) {
+      newErrors.nombre = 'El nombre es requerido';
+    }
+    
+    if (!email) {
+      newErrors.email = 'El correo es requerido';
+    }
+    
+    if (!password) {
+      newErrors.password = 'La contraseña es requerida';
+    }
+    
+    if (password && password.length < 6) {
+      newErrors.password = 'Mínimo 6 caracteres';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-/*-----------handleRegister--------------*/
+  /*-----------handleRegister--------------*/
   const handleRegister = async (e) => {
     e.preventDefault();
     
-    // Validar campos vacíos
     if (!nombre.trim()) {
-      setErrors({...errors, nombre: 'El nombre es requerido'});
+      setErrors(prev => ({...prev, nombre: 'El nombre es requerido'}));
       return;
     }
     
     if (!email) {
-      setErrors({...errors, email: 'El correo es requerido'});
+      setErrors(prev => ({...prev, email: 'El correo es requerido'}));
       return;
     }
     
     if (!password) {
-      setErrors({...errors, password: 'La contraseña es requerida'});
+      setErrors(prev => ({...prev, password: 'La contraseña es requerida'}));
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrors({...errors, confirmPassword: 'Las contraseñas no coinciden'});
+      setErrors(prev => ({...prev, confirmPassword: 'Las contraseñas no coinciden'}));
       return;
     }
     
     // Llamar al backend
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/register`,  {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fullName: nombre,
           email: email,
           password: password,
-          country: country  // ← AGREGAR AQUÍ
+          country: country
         })
       });
+
+      if (!response.ok) {
+        throw new Error(`Error HTTP en el registro: Status ${response.status}`);
+      }
       
       const data = await response.json();
       
@@ -138,24 +137,32 @@ const validateForm = () => {
         alert('Cuenta creada con éxito!');
         closeRegisterModal();
       } else {
-        setErrors({...errors, email: data.message});
+        setErrors(prev => ({...prev, email: data.message}));
       }
     } catch (error) {
-      setErrors({...errors, email: 'Error al conectar con el servidor'});
+      setErrors(prev => ({...prev, email: 'Error al conectar con el servidor'}));
+      
+      // 2. Reportar el error de registro a Sentry
+      Sentry.captureException(error, {
+        tags: {
+          modulo: 'Auth',
+          accion: 'RegistroUsuario'
+        }
+      });
     }
   };
 
-/*-----------handleLogin----------------*/
-const handleLogin = async (e) => {
+  /*-----------handleLogin----------------*/
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!username) {
-      setErrors({...errors, password: 'Ingresa tu usuario o correo'});
+      setErrors(prev => ({...prev, password: 'Ingresa tu usuario o correo'}));
       return;
     }
     
     if (!password) {
-      setErrors({...errors, password: 'Ingresa tu contraseña'});
+      setErrors(prev => ({...prev, password: 'Ingresa tu contraseña'}));
       return;
     }
     
@@ -169,19 +176,30 @@ const handleLogin = async (e) => {
           password: password
         })
       });
+
+      if (!response.ok) {
+        throw new Error(`Error HTTP en el login: Status ${response.status}`);
+      }
       
       const data = await response.json();
       
       if (data.success) {
-        // Guardar usuario en localStorage
         localStorage.setItem('user', JSON.stringify(data));
         closeLoginModal();
         window.location.href = '/dashboard';
       } else {
-        setErrors({...errors, password: data.message});
+        setErrors(prev => ({...prev, password: data.message}));
       }
     } catch (error) {
-      setErrors({...errors, password: 'Error al conectar con el servidor'});
+      setErrors(prev => ({...prev, password: 'Error al conectar con el servidor'}));
+      
+      // 2. Reportar el error de login a Sentry
+      Sentry.captureException(error, {
+        tags: {
+          modulo: 'Auth',
+          accion: 'InicioSesion'
+        }
+      });
     }
   };
 
@@ -203,16 +221,14 @@ const handleLogin = async (e) => {
         <div className="nav-links">
           <button onClick={() => setShowModal(true)} className="nav-link">¿Qué es ArbNet?</button>
           <Link to="#" onClick={(e) => { e.preventDefault(); setShowContactModal(true); }}>Contáctanos</Link>
-          {/*<button onClick={openLoginModal} className="nav-login">Iniciar Sesión</button>*/}
-          <Link to="/dashboard" onClick={(e) => { e.preventDefault(); openLoginModal(); }}className="nav-login">
-          Iniciar Sesión</Link>
+          <Link to="/dashboard" onClick={(e) => { e.preventDefault(); openLoginModal(); }} className="nav-login">
+            Iniciar Sesión
+          </Link>
           <Link to="#" onClick={(e) => { e.preventDefault(); setShowRegisterModal(true); }} className="nav-register">Registrarse</Link>
         </div>
       </nav>
 
-      {/* Resto del contenido... */}
-      
-      {/* MODAL */}
+      {/* Modal ¿Qué es ArbNet? */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -298,7 +314,6 @@ const handleLogin = async (e) => {
         </div>
       )}
 
-      {/*----------Modal Login-----------*/}
       {/* Modal Login */}
       {showLoginModal && (
         <div className="modal-overlay" onClick={closeLoginModal}>
@@ -311,8 +326,6 @@ const handleLogin = async (e) => {
             </div>
 
             <form className="login-form" onSubmit={handleLogin}>
-              
-              {/* Campo Usuario */}
               <div className="form-group input-with-icon">
                 <span className="input-icon">👤</span>
                 <input 
@@ -324,7 +337,6 @@ const handleLogin = async (e) => {
                 />
               </div>
 
-              {/* Campo Contraseña */}
               <div className="form-group password-group">
                 <span className="input-icon lock">🔒</span>
                 <input 
@@ -334,7 +346,7 @@ const handleLogin = async (e) => {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    setErrors({...errors, password: ''});
+                    setErrors(prev => ({...prev, password: ''}));
                   }}
                 />
                 <button 
@@ -345,9 +357,7 @@ const handleLogin = async (e) => {
                   {showPassword ? '👁️' : '🙈'}
                 </button>
               </div>
-              {errors.password && <p className="field-error">{errors.password}</p>}
 
-              {/* === ERROR CON BOTÓN === */}
               {errors.password && (
                 <div className="error-with-action">
                   <p className="field-error">{errors.password}</p>
@@ -365,9 +375,7 @@ const handleLogin = async (e) => {
                   )}
                 </div>
               )}
-              {/* ================================ */}    
 
-              {/* Recordar sesión */}
               <label className="checkbox-remember">
                 <input 
                   type="checkbox" 
@@ -378,12 +386,10 @@ const handleLogin = async (e) => {
                 <span className="remember-text">Recordar sesión</span>
               </label>
 
-              {/* Botón Entrar */}
               <button type="submit" className="btn-login-submit">
                 Entrar
               </button>
 
-              {/* Enlaces */}
               <div className="login-links">
                 <Link to="#" className="forgot-link">¿Olvidaste tu contraseña?</Link>
                 <Link to="#" onClick={(e) => { e.preventDefault(); closeLoginModal(); openRegisterModal(); }} className="register-link">Crear una cuenta nueva</Link>
@@ -397,7 +403,6 @@ const handleLogin = async (e) => {
         </div>
       )}
 
-      {/*-----------Modal Registro -------------*/}
       {/* Modal Registro */}
       {showRegisterModal && (
         <div className="modal-overlay" onClick={() => setShowRegisterModal(false)}>
@@ -417,9 +422,9 @@ const handleLogin = async (e) => {
                   className="form-input"
                   value={nombre}
                   onChange={(e) => {
-                  setNombre(e.target.value);
-                  setErrors({...errors, nombre: ''});
-                }}
+                    setNombre(e.target.value);
+                    setErrors(prev => ({...prev, nombre: ''}));
+                  }}
                 />
                 {errors.nombre && <p className="field-error">{errors.nombre}</p>}
               </div>
@@ -432,9 +437,9 @@ const handleLogin = async (e) => {
                   ref={emailInputRef}
                   value={email}
                   onChange={(e) => {
-                  setEmail(e.target.value);
-                  setErrors({...errors, email: ''});
-                }}
+                    setEmail(e.target.value);
+                    setErrors(prev => ({...prev, email: ''}));
+                  }}
                 />
                 {errors.email && (
                   <div className="error-with-action">
@@ -461,13 +466,13 @@ const handleLogin = async (e) => {
 
               <div className="form-group">
                 <input 
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Contraseña" 
-                    className="form-input"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setErrors({...errors, password: ''});
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Contraseña" 
+                  className="form-input"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors(prev => ({...prev, password: ''}));
                   }}
                 />
                 <button 
@@ -478,29 +483,29 @@ const handleLogin = async (e) => {
                   {showPassword ? '👁️' : '🙈'}
                 </button>          
               </div>
-              {errors.password && <p className="field-error">{errors.password}</p>}  
+              {errors.password && <p className="field-error">{errors.password}</p>}
+
               <div className="form-group">
                 <input 
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirmar contraseña" 
-                    className="form-input"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      setErrors({...errors, confirmPassword: ''});
-                    }}
-                  />
-                  <button 
-                    type="button" 
-                    className="toggle-password1"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? '👁️' : '🙈'}
-                  </button>
-                </div>
-                {errors.confirmPassword && <p className="field-error">{errors.confirmPassword}</p>}
-              {/*=====add new file======== */}
-              {/* Campo País */}
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirmar contraseña" 
+                  className="form-input"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    setErrors(prev => ({...prev, confirmPassword: ''}));
+                  }}
+                />
+                <button 
+                  type="button" 
+                  className="toggle-password1"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
+              {errors.confirmPassword && <p className="field-error">{errors.confirmPassword}</p>}
+
               <div className="form-group">
                 <input 
                   type="text" 
@@ -511,7 +516,6 @@ const handleLogin = async (e) => {
                 />
               </div>
 
-              {/* Tipo de Suscripción */}
               <div className="form-group subscription-options">
                 <label className="subscription-label">Tipo de Suscripción:</label>
                 <div className="radio-group">
@@ -535,8 +539,8 @@ const handleLogin = async (e) => {
                     <span>Pago $5 (Próximamente)</span>
                   </label>
                 </div>
-              </div> 
-              {/*==============theare file new============ */}     
+              </div>
+
               <button type="submit" className="btn-register-submit">
                 Crear Cuenta
               </button>
@@ -550,69 +554,66 @@ const handleLogin = async (e) => {
               <p>🔒 <strong>Tus datos están seguros</strong></p>
             </div>
           </div>
-          </div>
-        )}
+        </div>
+      )}
 
+      {/* Sección Central */}
+      <main className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">
+            Más eficiencia y precisión en el arbitraje P2P
+          </h1>
+          <p className="hero-subtitle">
+            Automatiza tus operaciones y maximiza tu rentabilidad con ArbNet.
+          </p>
 
-            {/* Sección Central */}
-            <main className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-title">
-                Más eficiencia y precisión en el arbitraje P2P
-              </h1>
-              <p className="hero-subtitle">
-                Automatiza tus operaciones y maximiza tu rentabilidad con ArbNet.
-              </p>
-
-              {/* Nueva sección de iconos e información */}
-              <div className="features-section">
-                <div className="feature">
-                  <span className="feature-icon">⚡</span>
-                  <h3>Automatización</h3>
-                  <p>Ejecuta operaciones automáticamente entre exchanges</p>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">📈</span>
-                  <h3>Ganancias</h3>
-                  <p>Maximiza tus beneficios con arbitraje inteligente</p>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">🔒</span>
-                  <h3>Seguridad</h3>
-                  <p>Solo lectura, tus fondos siempre protegidos</p>
-                </div>
-              </div>
-
-              {/* Botones de acción */}
-              <div className="cta-buttons">
-                <Link 
-                  to="/dashboard" 
-                  onClick={(e) => { e.preventDefault(); openLoginModal(); }}
-                  className="btn-login">
-                  🔐 Iniciar Sesión
-                </Link>
-                <Link 
-                  to="/dashboard" 
-                  onClick={(e) => { e.preventDefault(); openRegisterModal(); }} 
-                  className="btn-register">
-                  ✏️ Registrarse
-                </Link>
-              </div>
-
-              <p className="login-link">
-                ¿Ya tienes una cuenta? 
-                <Link 
-                  to="/dashboard" 
-                  onClick={(e) => { e.preventDefault(); openRegisterModal(); }} 
-                  className="btn-guest"
-                >
-                  Entrar como invitado
-                </Link>
-              </p>
+          <div className="features-section">
+            <div className="feature">
+              <span className="feature-icon">⚡</span>
+              <h3>Automatización</h3>
+              <p>Ejecuta operaciones automáticamente entre exchanges</p>
             </div>
-      </main>
+            <div className="feature">
+              <span className="feature-icon">📈</span>
+              <h3>Ganancias</h3>
+              <p>Maximiza tus beneficios con arbitraje inteligente</p>
+            </div>
+            <div className="feature">
+              <span className="feature-icon">🔒</span>
+              <h3>Seguridad</h3>
+              <p>Solo lectura, tus fondos siempre protegidos</p>
+            </div>
           </div>
-        );
-      };
+
+          <div className="cta-buttons">
+            <Link 
+              to="/dashboard" 
+              onClick={(e) => { e.preventDefault(); openLoginModal(); }}
+              className="btn-login">
+              🔐 Iniciar Sesión
+            </Link>
+            <Link 
+              to="/dashboard" 
+              onClick={(e) => { e.preventDefault(); openRegisterModal(); }} 
+              className="btn-register">
+              ✏️ Registrarse
+            </Link>
+          </div>
+
+          <p className="login-link">
+            ¿Ya tienes una cuenta? 
+            <Link 
+              to="/dashboard" 
+              onClick={(e) => { e.preventDefault(); openRegisterModal(); }} 
+              className="btn-guest"
+            >
+              Entrar como invitado
+            </Link>
+          </p>
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default Welcome;

@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import { BiHomeAlt, BiLogOut } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
+import * as Sentry from '@sentry/react'; // <-- Integración de Sentry
 import './Dashboard.css';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userName, setUserName] = useState(() => {
-  // Esto se ejecuta una sola vez al montar el componente
-  const user = localStorage.getItem('user');
+    // Esto se ejecuta una sola vez al montar el componente
+    const user = localStorage.getItem('user');
     if (user) {
       const userData = JSON.parse(user);
       return userData.fullName || userData.email || '';
     }
     return '';
-});
+  });
 
   const diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
   const [orders, setOrders] = useState([]);
@@ -33,17 +34,38 @@ const Dashboard = () => {
       try {
         // const response = await fetch('https://localhost:7039/api/BinanceP2P/historial-p2p');
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/BinanceP2P/historial-p2p`); //add Produccion
+        
+        if (!response.ok) {
+          throw new Error(`HTTP Error en historial-p2p: ${response.status}`);
+        }
+
         const data = await response.json();
-        console.log('Orders recibidos:', data);  // Agregar esto
+        console.log('Orders recibidos:', data); // Agregar esto
         setOrders(data);
         
         // También calcular el summary
         //const summaryResponse = await fetch('https://localhost:7039/api/BinanceP2P/summary');
         const summaryResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/BinanceP2P/summary`); //add Produccion
+        
+        if (!summaryResponse.ok) {
+          throw new Error(`HTTP Error en summary: ${summaryResponse.status}`);
+        }
+
         const summaryData = await summaryResponse.json();
         setSummary(summaryData);
       } catch (error) {
         console.error('Error cargando datos:', error);
+
+        // 🚨 CAPTURA Y ENVÍO AUTOMÁTICO DEL ERROR A SENTRY
+        Sentry.captureException(error, {
+          tags: {
+            seccion: 'Dashboard',
+            endpoint: 'BinanceP2P'
+          },
+          extra: {
+            apiUrl: import.meta.env.VITE_API_URL
+          }
+        });
       }
     };
     
@@ -82,7 +104,7 @@ const Dashboard = () => {
               <BiHomeAlt className="menu-icon" />
               <span className="menu-text">Dashboard</span>
             </li>
-        {/* Opciones en construcción - con clase disabled */}
+            {/* Opciones en construcción - con clase disabled */}
             <li className="disabled" title="En construcción">
               <span className="menu-icon">⇄</span>
               <span className="menu-text">Órdenes P2P</span>
@@ -107,10 +129,10 @@ const Dashboard = () => {
               <span className="menu-text">Salir</span>
             </li>
           </ul>
-            {/* Pie de página */}
+          {/* Pie de página */}
           <div className="sidebar-footer">
-              <p>© 2026 ArbNet | V1.0.0</p>
-              <p className="copyright-short">©</p>
+            <p>© 2026 ArbNet | V1.0.0</p>
+            <p className="copyright-short">©</p>
           </div>
         </aside>
 

@@ -272,3 +272,17 @@ Modifica el archivo ubicado en backend/ArbNet/appsettings.json con tu cadena de 
 
 🏃 Ejecución de la AplicaciónUna vez configurado todo, el sistema se distribuye en los siguientes puertos locales:ComponenteComando de InicioURL / Puerto LocalBackend (API)dotnet runhttps://localhost:7039 o http://localhost:5115Frontend (App)npm run devhttp://localhost:5173Resumen rápido para iniciar el proyecto en el día a día:Asegúrate de que el servicio de SQL Server esté corriendo.Terminal 1 (Backend): cd backend/ArbNet && dotnet runTerminal 2 (Frontend): cd frontend && npm run devAbre tu navegador web e ingresa a: http://localhost:5173
 ---
+
+## 🐛 Challenge #bugsmash: Incidencia y Solución (Sentry + Google AI)
+
+### 1. Descripción del Bug
+Explicación breve de la falla de conexión/integración detectada.
+
+### 2. Telemetría y Captura en Sentry
+- **Issue ID:** `...`
+- **Error:** `...`
+![Sentry Issue](./images/sentry-error.png)
+
+### 3. Diagnóstico y Corrección
+- **Diagnóstico con Google AI:** ...
+- **Fix aplicado:** Se ajustó la lógica en la rama `bugfix/sentry-binance-connection`.
